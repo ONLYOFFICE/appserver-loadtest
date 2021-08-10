@@ -1,14 +1,22 @@
 from common.filestasksets import CreateReadUpdateDeleteFileTaskSet, EditFileTaskSet, FavoritesTaskSet, GetFolderMyTaskSet, CreateReadUpdateDeleteFolderTaskSet, GetFolderShareTaskSet
 from common.actions import authentication
 from locust import HttpUser, between, events
+from gevent.lock import Semaphore
 
 users_names = []
+
+all_users_spawned = Semaphore()
+all_users_spawned.acquire()
 
 @events.test_start.add_listener
 def on_test_start(**kwargs):
     users_names.clear()
     for i in range(1, 50001):
         users_names.append(f"testuser{str(i)}@onlyoffice.com")
+
+@events.spawning_complete.add_listener
+def on_spawn_complete(**kwargs):
+    all_users_spawned.release()
 
 try:
     stream = open("data/stream_template.docx", "rb")
@@ -26,3 +34,4 @@ class OnlyOfficeUser(HttpUser):
 
     def on_start(self):
         authentication(self.client, {"password": "testuser", "userName":users_names.pop()})
+        all_users_spawned.wait()
