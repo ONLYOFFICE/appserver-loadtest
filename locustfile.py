@@ -1,4 +1,7 @@
-from common.filestasksets import CreateReadUpdateDeleteFileTaskSet, EditFileTaskSet, FavoritesTaskSet, GetFolderMyTaskSet, CreateReadUpdateDeleteFolderTaskSet, GetFolderShareTaskSet
+from common.filestasksets import (
+    CreateReadUpdateDeleteFileTaskSet, EditFileTaskSet, 
+    FavoritesTaskSet, GetFolderMyTaskSet, 
+    CreateReadUpdateDeleteFolderTaskSet, GetFolderShareTaskSet)
 from common.actions import authentication
 from locust import HttpUser, between, events
 from gevent.lock import Semaphore
