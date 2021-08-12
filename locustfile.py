@@ -4,12 +4,11 @@ from locust import HttpUser, between, events
 from gevent.lock import Semaphore
 
 users_names = []
-
 all_users_spawned = Semaphore()
-all_users_spawned.acquire()
 
 @events.test_start.add_listener
 def on_test_start(**kwargs):
+    all_users_spawned.acquire()
     users_names.clear()
     for i in range(1, 50001):
         users_names.append(f"testuser{str(i)}@onlyoffice.com")
